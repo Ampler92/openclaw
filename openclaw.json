@@ -1,12 +1,12 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-20T16:59:45.971Z"
+    "lastTouchedAt": "2026-03-21T02:08:41.995Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-20T16:59:45.901Z",
+    "lastRunAt": "2026-03-21T00:57:24.550Z",
     "lastRunVersion": "2026.3.13",
-    "lastRunCommand": "onboard",
+    "lastRunCommand": "doctor",
     "lastRunMode": "local"
   },
   "auth": {
@@ -14,30 +14,41 @@
       "vllm:default": {
         "provider": "vllm",
         "mode": "api_key"
+      },
+      "vllm:manual": {
+        "provider": "vllm",
+        "mode": "token"
       }
+    },
+    "order": {
+      "vllm": [
+        "vllm:manual",
+        "vllm:default"
+      ]
     }
   },
   "models": {
     "mode": "merge",
     "providers": {
       "vllm": {
-        "baseUrl": "http://192.168.1.230:8088/v1",
+        "baseUrl": "http://192.168.1.230:8069/v1",
         "apiKey": "VLLM_API_KEY",
         "api": "openai-completions",
         "models": [
           {
-            "id": "mlx-community/Qwen3.5-35B-A3B-4bit",
-            "name": "mlx-community/Qwen3.5-35B-A3B-4bit",
+            "id": "1e20fd8d42056f870933bf98ca6211024744f7ec",
+            "name": "1e20fd8d42056f870933bf98ca6211024744f7ec",
             "reasoning": false,
-            "input": ["text"],
+            "input": [
+              "text"
+            ],
             "cost": {
               "input": 0,
               "output": 0,
               "cacheRead": 0,
               "cacheWrite": 0
             },
-            "contextWindow": 128000,
-            "maxTokens": 8192
+            "maxTokens": 32768
           }
         ]
       }
@@ -46,47 +57,57 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "vllm/mlx-community/Qwen3.5-35B-A3B-4bit"
+        "primary": "vllm/1e20fd8d42056f870933bf98ca6211024744f7ec"
       },
       "models": {
-        "vllm/mlx-community/Qwen3.5-35B-A3B-4bit": {}
+        "vllm/1e20fd8d42056f870933bf98ca6211024744f7ec": {
+          "params": {
+            "temperature": 0.7,
+            "max_tokens": 32768,
+            "top_p": 0.8,
+            "frequency_penalty": 0.1,
+            "repeat_last_n": 64,
+            "num_thread": 10,
+            "min_p": 0,
+            "extra_body": {
+              "top_k": 20,
+              "chat_template_kwargs": {
+                "enable_thinking": false
+              }
+            },
+            "top_k": 20,
+            "presence_penalty": 0,
+            "repetition_penalty": 1
+          }
+        }
       },
       "workspace": "/home/klaus-silhan/.openclaw/workspace",
-      "sandbox": {
-        "mode": "non-main"
+      "compaction": {
+        "mode": "safeguard"
       },
       "subagents": {
+        "maxConcurrent": 2,
         "maxSpawnDepth": 2,
         "maxChildrenPerAgent": 5,
-        "maxConcurrent": 4
+        "runTimeoutSeconds": 600
+      },
+      "sandbox": {
+        "mode": "off"
       }
     },
     "list": [
       {
-        "id": "main"
-      },
-      {
         "id": "ceo",
         "name": "ceo",
         "workspace": "/home/klaus-silhan/.openclaw/workspace-ceo",
-        "agentDir": "/home/klaus-silhan/.openclaw/agents/ceo/agent",
-        "tools": {
-          "profile": "messaging",
-          "allow": [
-            "sessions_spawn",
-            "sessions_send",
-            "sessions_list",
-            "sessions_history",
-            "group:messaging",
-            "read"
-          ],
-          "deny": [
-            "exec",
-            "group:runtime",
-            "write",
-            "apply_patch",
-            "browser"
+        "subagents": {
+          "allowAgents": [
+            "coder",
+            "reviewer"
           ]
+        },
+        "tools": {
+          "profile": "full"
         }
       },
       {
@@ -95,24 +116,10 @@
         "workspace": "/home/klaus-silhan/.openclaw/workspace-coder",
         "agentDir": "/home/klaus-silhan/.openclaw/agents/coder/agent",
         "sandbox": {
-          "mode": "all"
+          "mode": "off"
         },
         "tools": {
-          "profile": "coding",
-          "allow": [
-            "exec",
-            "read",
-            "write",
-            "apply_patch"
-          ],
-          "deny": [
-            "group:messaging",
-            "sessions_spawn",
-            "browser",
-            "canvas",
-            "cron",
-            "nodes"
-          ]
+          "profile": "coding"
         }
       },
       {
@@ -121,27 +128,27 @@
         "workspace": "/home/klaus-silhan/.openclaw/workspace-reviewer",
         "agentDir": "/home/klaus-silhan/.openclaw/agents/reviewer/agent",
         "sandbox": {
-          "mode": "all"
+          "mode": "off"
+        },
+        "tools": {
+          "profile": "coding"
+        }
+      }
+    ]
   },
   "tools": {
     "profile": "coding",
+    "sessions": {
+      "visibility": "all"
+    },
+    "agentToAgent": {
+      "enabled": true,
       "allow": [
-            "read",
-            "exec"
-          ],
-          "deny": [
-            "write",
-            "apply_patch",
-            "group:messaging",
-            "sessions_spawn",
-            "browser",
-            "canvas",
-            "cron",
-            "nodes"
+        "ceo",
+        "coder",
+        "reviewer"
       ]
     }
-      }
-    ]
   },
   "bindings": [
     {
@@ -151,16 +158,6 @@
       }
     }
   ],
-  "tools": {
-    "profile": "coding",
-    "agentToAgent": {
-      "enabled": true,
-      "allow": ["ceo", "coder", "reviewer"]
-    },
-    "sessions": {
-      "visibility": "all"
-    }
-  },
   "commands": {
     "native": "auto",
     "nativeSkills": "auto",
@@ -203,7 +200,7 @@
         }
       },
       "groupPolicy": "allowlist",
-      "streaming": "partial"
+      "streaming": "off"
     }
   },
   "gateway": {
@@ -236,6 +233,9 @@
   "plugins": {
     "entries": {
       "telegram": {
+        "enabled": true
+      },
+      "acpx": {
         "enabled": true
       }
     }

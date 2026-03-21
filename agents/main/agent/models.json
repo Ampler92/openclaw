@@ -1,0 +1,28 @@
+{
+  "providers": {
+    "vllm": {
+      "baseUrl": "http://192.168.1.230:8069/v1",
+      "apiKey": "VLLM_API_KEY",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "1e20fd8d42056f870933bf98ca6211024744f7ec",
+          "name": "1e20fd8d42056f870933bf98ca6211024744f7ec",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "maxTokens": 32768,
+          "contextWindow": 200000,
+          "api": "openai-completions"
+        }
+      ]
+    }
+  }
+}

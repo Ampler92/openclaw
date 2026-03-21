@@ -1,0 +1,260 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.13",
+    "lastTouchedAt": "2026-03-20T18:41:20.447Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-20T16:59:45.901Z",
+    "lastRunVersion": "2026.3.13",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "vllm:default": {
+        "provider": "vllm",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "vllm": {
+        "baseUrl": "http://192.168.1.230:8088/v1",
+        "apiKey": "VLLM_API_KEY",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "mlx-community/Qwen3.5-35B-A3B-4bit",
+            "name": "mlx-community/Qwen3.5-35B-A3B-4bit",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 32768,
+            "maxTokens": 32768
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "vllm/mlx-community/Qwen3.5-35B-A3B-4bit"
+      },
+      "models": {
+        "vllm/mlx-community/Qwen3.5-35B-A3B-4bit": {
+          "params": {
+            "temperature": 0.6,
+            "max_tokens": 32768,
+            "top_p": 0.95,
+            "frequency_penalty": 0.1,
+            "repeat_last_n": 64,
+            "num_thread": 10,
+            "min_p": 0.05,
+            "extra_body": {
+              "top_k": 20,
+              "chat_template_kwargs": {
+                "enable_thinking": false
+              }
+            },
+            "top_k": 20,
+            "presence_penalty": 0.0,
+            "repetition_penalty": 1.0
+          }
+        }
+      },
+      "workspace": "/home/klaus-silhan/.openclaw/workspace",
+      "subagents": {
+        "maxConcurrent": 2,
+        "maxSpawnDepth": 2,
+        "maxChildrenPerAgent": 5,
+        "runTimeoutSeconds": 600
+      },
+      "sandbox": {
+        "mode": "off"
+      }
+    },
+    "list": [
+      {
+        "id": "main"
+      },
+      {
+        "id": "ceo",
+        "name": "ceo",
+        "workspace": "/home/klaus-silhan/.openclaw/workspace-ceo",
+        "subagents": {
+          "allowAgents": [
+            "coder",
+            "reviewer"
+          ]
+        },
+        "tools": {
+          "profile": "coding",
+          "allow": [
+            "group:sessions",
+            "group:messaging",
+            "read"
+          ],
+          "deny": [
+            "exec",
+            "write"
+          ]
+        }
+      },
+      {
+        "id": "coder",
+        "name": "coder",
+        "workspace": "/home/klaus-silhan/.openclaw/workspace-coder",
+        "agentDir": "/home/klaus-silhan/.openclaw/agents/coder/agent",
+        "sandbox": {
+          "mode": "off"
+        },
+        "tools": {
+          "profile": "coding",
+          "allow": [
+            "exec",
+            "read",
+            "write",
+            "apply_patch"
+          ],
+          "deny": [
+            "sessions_spawn"
+          ]
+        }
+      },
+      {
+        "id": "reviewer",
+        "name": "reviewer",
+        "workspace": "/home/klaus-silhan/.openclaw/workspace-reviewer",
+        "agentDir": "/home/klaus-silhan/.openclaw/agents/reviewer/agent",
+        "sandbox": {
+          "mode": "off"
+        },
+        "tools": {
+          "profile": "coding",
+          "allow": [
+            "read",
+            "exec"
+          ],
+          "deny": [
+            "write",
+            "apply_patch"
+          ]
+        }
+      }
+    ]
+  },
+  "tools": {
+    "profile": "coding",
+    "sessions": {
+      "visibility": "all"
+    },
+    "agentToAgent": {
+      "enabled": true,
+      "allow": [
+        "ceo",
+        "coder",
+        "reviewer"
+      ]
+    }
+  },
+  "bindings": [
+    {
+      "agentId": "ceo",
+      "match": {
+        "channel": "telegram"
+      }
+    }
+  ],
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer",
+    "agentToAgent": {
+      "maxPingPongTurns": 0
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "8634209162:AAH6kty2A8ryuFeINNfYBpsRgPQNLW_YPyg",
+      "groups": {
+        "*": {
+          "requireMention": true
+        }
+      },
+      "groupPolicy": "allowlist",
+      "streaming": "partial"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "auto",
+    "auth": {
+      "mode": "token",
+      "token": "f76901f743704d7a5ba9ad4b681da4f585cadd7c356ed5ab"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "contacts.list",
+        "calendar.add",
+        "reminders.add",
+        "sms.send",
+        "location.get",
+        "system.run"
+      ]
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      },
+      "acpx": {
+        "enabled": true
+      }
+    }
+  }
+}

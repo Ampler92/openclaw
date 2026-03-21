@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "profiles": {
+    "vllm:default": {
+      "type": "api_key",
+      "provider": "vllm",
+      "key": "dummy"
+    },
+    "vllm:manual": {
+      "type": "token",
+      "provider": "vllm",
+      "token": "6969"
+    }
+  },
+  "lastGood": {
+    "vllm": "vllm:manual"
+  },
+  "usageStats": {
+    "vllm:default": {
+      "errorCount": 1,
+      "lastUsed": 1774056992429,
+      "lastFailureAt": 1774057229461,
+      "failureCounts": {
+        "auth": 1
+      },
+      "cooldownUntil": 1774057289461
+    },
+    "vllm:manual": {
+      "errorCount": 0,
+      "lastFailureAt": 1774057146748,
+      "lastUsed": 1774061457230
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "profiles": {
+    "vllm:default": {
+      "type": "api_key",
+      "provider": "vllm",
+      "key": "dummy"
+    }
+  },
+  "usageStats": {
+    "vllm:default": {
+      "errorCount": 0,
+      "lastUsed": 1774040988330
+    }
+  }
+}

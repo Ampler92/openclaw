@@ -1,0 +1,14 @@
+# Backend Dependencies
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+aiohttp==3.9.1
+scrapy==2.11.0
+redis==5.0.1
+python-dotenv==1.0.0
+pydantic==2.5.3
+schedule==1.2.1
+
+# Frontend Dependencies (frontend/package.json)
+# react==18.2.0
+# react-dom==18.2.0
+# vite==5.0.0

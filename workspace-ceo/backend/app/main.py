@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import asyncio
@@ -8,9 +9,18 @@ from datetime import datetime
 import logging
 
 from app.scraper.livesport_scraper import LivesportScraper
-from app.scraper.utils import get_cache_key
+# No utility needed yet
 
 app = FastAPI(title="Live Football Dashboard API")
+
+# Add CORS middleware to allow frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://192.168.1.169:3000", "http://192.168.1.169:3001"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 logger = logging.getLogger(__name__)
 
@@ -165,4 +175,4 @@ async def shutdown():
 if __name__ == "__main__":
     import uvicorn
     debug = os.getenv("DEBUG", "false").lower() == "true"
-    uvicorn.run(app, host="0.0.0.0", port=8000, debug=debug)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=debug)

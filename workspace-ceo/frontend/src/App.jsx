@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import MatchCard from './components/MatchCard.jsx'
 import './App.css'
 
-const API_BASE = 'http://localhost:8000'
+const API_BASE = '/api'
 
 function App() {
     const [matches, setMatches] = useState([])
@@ -15,7 +15,7 @@ function App() {
             setLoading(true)
             setError(null)
             
-            const response = await fetch(`${API_BASE}/api/live-matches`)
+            const response = await fetch(`${API_BASE}/live-matches`)
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
